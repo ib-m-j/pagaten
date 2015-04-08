@@ -6,7 +6,8 @@ import random
 class SpilStatus:
     def __init__(self):
         self.header = ['name', 'target', 'spillet', 'afholdt', 'sidensidst']
-        planFiles = glob.glob('*.pln')
+        self.headerFormats = ['{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
+        planFiles = glob.glob('*.stat')
         lastValue = 0
         lastPlan = None
         for f in planFiles:
@@ -37,7 +38,19 @@ class SpilStatus:
                 self.status[name]['spillet'] +=1
                 self.status[name]['sidensidst'] = 0
             
-        
+    def saveNewStatus(self, startDate):
+        f = open('pagaten-{}-{}.stat'.format(startDate.year, startDate.month),'w')
+        res =''
+        for x in self.names:
+            res = res + x
+            for format,v in zip(self.headerFormats[1:], self.header[1:]):
+                res = res + ';' + format.format(self.status[x][v])
+            res = res + '\n'
+        f.write(res)
+        f.close()
+        print(res)
+                 
+
     def pr(self):
         for n in self.names:
             print('{:<8} {}\n'.format(n, self.status[n]))
@@ -46,45 +59,58 @@ class SpilStatus:
 
 
 class Plan:
+    tempFileName = 'plan.tmp'
+    lineTemplate = '{0:<8}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|\n'
+
+
     def __init__(self, title, startDate, endDate, skipDates):
         self.startDate = startDate
         self.endDate = endDate
         self.skipDates = skipDates
-        self.players = ['Guddie', 'Einar', 'Bente', 'Philippe', 'Ib']
+        self.status = SpilStatus()
+        self.players = [x for x in self.status.names]
+        self.backupTempName = 'plan.bak'
+
+    def getPlanName(self):
+        return ('pagatplan-{}-{}.pln'.format(self.startDate.year, self.startDate.month))
+
+    def makePlanHeader(self):
+        return Plan.lineTemplate.format('',*self.status.names)
+
+    def run(self):
+        if not os.path.exists(Plan.tempFileName):
+            print('Making temp plan - edit where people cannot play')
+            dates = []
+            curDate = self.startDate
+            incTime = datetime.timedelta(days = 7)
+            while curDate <= self.endDate:
+                dates.append(curDate)
+                curDate = curDate + incTime
 
 
-    def init(self):
-        dates = []
-        curDate = self.startDate
-        incTime = datetime.timedelta(days = 7)
-        print(curDate, self.endDate, curDate <=self.endDate)
-        while curDate <= self.endDate:
-            dates.append(curDate)
-            curDate = curDate + incTime
+            f = open(Plan.tempFileName, 'w')
+            res = Plan.lineTemplate.format(' ', *self.players)
+            for d in dates:
+                if d in self.skipDates: 
+                    fill = 5*' '
+                else:
+                    fill = 5*'X'
+                res = res + Plan.lineTemplate.format(d.__format__('%y-%m-%d'),*fill)
 
-        line = '{0:<8}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}\n'
-
-        f = open('plan.tmp', 'w')
-        res = line.format(' ', *self.players)
-        for d in dates:
-            if d in self.skipDates: 
-                fill = 5*' '
-            else:
-                fill = 5*'X'
-            res = res + line.format(d.__format__('%d/%m'),*fill)
-
-        print(res)
-        f.write(res)
-        f.close()
-
-
-    def newPlan(self):
+            print(res)
+            f.write(res)
+            f.close()
+        else:
+            self.makeNewPlan()
+            
+    def makeNewPlan(self):
+        print('making final plan:', self.getPlanName())
         suggested = Plan.getTempPlan()
         new = []
         for rec in suggested:
-            selected = [' ' for x in range(5)]
+            selected = [' ' for x in range(len(self.status.names))]
             indices = []
-            for n,element in enumerate(rec):
+            for n,element in enumerate(rec[1:]):
                 if element == 'X':
                     indices.append(n)
             if len(indices) >= 4:
@@ -95,35 +121,39 @@ class Plan:
                 for v in res:
                     selected[v] = 'X'
                 manager = random.randrange(len(res))
-                selected[manager] = 'XX'
-            new.append(selected)
-        return new
-                
+                selected[res[manager]] = 'XX'
+            new.append([rec[0]] + selected)
+
+        f = open(self.getPlanName(),'w')
+        res = self.makePlanHeader()
+        for l in new:
+            res = res + Plan.lineTemplate.format(*l)
+            self.status.addPlanLine(l[1:])
+            #self.status.pr()
+        print(res)
+        f.write(res)
+        f.close()
+        os.remove(Plan.tempFileName)
+        self.status.saveNewStatus(self.startDate)
 
     @staticmethod
     def getTempPlan():
         canPlan = []
-        f = open('plan.tmp', 'r')
+        f = open(Plan.tempFileName, 'r')
         for l in  f.readlines()[1:]:
             elements = l.split('|')
-            canPlan.append([x.strip() for x in elements[1:]])
+            canPlan.append([x.strip() for x in elements])
         f.close()
         return canPlan
 
 
 
 if __name__ == '__main__':
-    print("starting")
     plan = Plan('PagatPlan Forår 2015',datetime.date(2015, 1, 8), datetime.date(2015, 6, 25),
          [datetime.date(2015,4,2), datetime.date(2015,5,14)])
-    plan.init()
+    #if plan.tmp does not exist run creates this and exits.
+    #this can be edited by registeribng where people cannot play
+    #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
+    plan.run()
 
-    status = SpilStatus()
-    status.pr()
-    status.addPlanLine(['X','X','X','XX',''])
-    status.pr()
-    for l in plan.newPlan():
-        print(l)
-        status.addPlanLine(l)
-        status.pr()
 #comment
