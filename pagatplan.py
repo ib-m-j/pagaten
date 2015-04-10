@@ -3,6 +3,65 @@ import glob
 import os.path
 import random
 
+class RoundInput:
+    def __init__(self, dato, allPlayers, availableIndices):
+        self.date = dato
+        self.allPlayers = allPlayers
+        self.available = availableIndices
+
+    def calculatePlayers(self, status):
+        pass
+
+    def getAllConfigurations(self, status):
+        pass
+
+    def getBestLocalLine(self, status):
+        pass
+
+    def getStr(self):
+        if possiblePlayers:
+            fill = len(possiblePlayers)*'X'
+        else:
+            pass
+                                   
+
+    def getSimpleRound(self):
+        if len(self.available) < 4:
+            return RoundFilled(self.date, None, None)
+        else:
+            selectedPlayers = random.sample(self.available, 4)
+            selectedManager = random.randrange(len(selectedPlayers))
+            
+        return RoundFilled(self.date, 
+                           [self.allPlayers[x] for x in selectedPlayers],
+                           self.allPlayers[selectedPlayers[selectedManager]])
+        
+class RoundFilled:
+    def __init__(self, date, players, arranger):
+        self.date = date
+        self.players = players
+        self.arranger = arranger
+
+    def getString(self, unused):
+        dateStr = self.date.__str__()
+        if self.players:
+            res =  dateStr + ' - ' 
+            for x in self.players:
+                res = res + x + ', '
+            return res[:-2] + '\n'
+        return dateStr + '\n'
+
+    def getLine(self, allPlayers, template):
+        dateStr = self.date.__str__()
+        players = [' ']*len(allPlayers)
+        if self.players:
+            for x in self.players:
+                players[allPlayers.index(x)] = 'X'
+
+            players[allPlayers.index(self.arranger)] = 'XX'
+        return template.format(dateStr, *players)
+
+
 class SpilStatus:
     def __init__(self):
         self.header = ['name', 'target', 'spillet', 'afholdt', 'sidensidst']
@@ -60,8 +119,6 @@ class SpilStatus:
 
 class Plan:
     tempFileName = 'plan.tmp'
-    lineTemplate = '{0:<8}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|\n'
-
 
     def __init__(self, title, startDate, endDate, skipDates):
         self.startDate = startDate
@@ -72,75 +129,95 @@ class Plan:
         self.backupTempName = 'plan.bak'
 
     def getPlanName(self):
-        return ('pagatplan-{}-{}.pln'.format(self.startDate.year, self.startDate.month))
+        return ('pagatplan-{}-{}.pln'.format(
+            self.startDate.year, self.startDate.month))
 
     def makePlanHeader(self):
-        return Plan.lineTemplate.format('',*self.status.names)
+        return self.lineTemplate().format('',*self.status.names)
+    
+    def lineTemplate(self):
+        lineTemplate = '{0:<10}|'
+        for x in range(len(self.players)):
+            lineTemplate = lineTemplate + '{'+'{}'.format(x+1)+':^8}|'
+        lineTemplate = lineTemplate + '\n'
+        return lineTemplate
+
+    #this can be updated to indicate where people cannot play
+    def makePlanInput(self):
+        print('Making temp plan - edit where people cannot play')
+        dates = []
+        curDate = self.startDate
+        incTime = datetime.timedelta(days = 7)
+        while curDate <= self.endDate:
+            dates.append(curDate)
+            curDate = curDate + incTime
+            
+        res = self.lineTemplate().format(' ', *self.players)
+        
+        for d in dates:
+            if d in self.skipDates: 
+                fillChar = ' '
+            else:
+                fillChar = 'X'
+
+            res = res + self.lineTemplate().format(
+                d.__format__('%Y-%m-%d'),*(len(self.players)*fillChar))
+
+        f = open(Plan.tempFileName, 'w')
+        print(res)
+        f.write(res)
+        f.close()
 
     def run(self):
         if not os.path.exists(Plan.tempFileName):
-            print('Making temp plan - edit where people cannot play')
-            dates = []
-            curDate = self.startDate
-            incTime = datetime.timedelta(days = 7)
-            while curDate <= self.endDate:
-                dates.append(curDate)
-                curDate = curDate + incTime
-
-
-            f = open(Plan.tempFileName, 'w')
-            res = Plan.lineTemplate.format(' ', *self.players)
-            for d in dates:
-                if d in self.skipDates: 
-                    fill = 5*' '
-                else:
-                    fill = 5*'X'
-                res = res + Plan.lineTemplate.format(d.__format__('%y-%m-%d'),*fill)
-
-            print(res)
-            f.write(res)
-            f.close()
+            self.makePlanInput()
         else:
             self.makeNewPlan()
-            
+
     def makeNewPlan(self):
         print('making final plan:', self.getPlanName())
-        suggested = Plan.getTempPlan()
-        new = []
+        suggested = Plan.getTempPlan(self.players)
+        planInput = []
         for rec in suggested:
-            selected = [' ' for x in range(len(self.status.names))]
+            datestr = rec[0]
+            date = datetime.date(int(datestr[0:4]),
+                                 int(datestr[5:7]),
+                                 int(datestr[8:]))
             indices = []
             for n,element in enumerate(rec[1:]):
                 if element == 'X':
                     indices.append(n)
-            if len(indices) >= 4:
-                if len(indices) > 4:
-                    res = random.sample(indices, 4)
-                else:
-                    res = indices
-                for v in res:
-                    selected[v] = 'X'
-                manager = random.randrange(len(res))
-                selected[res[manager]] = 'XX'
-            new.append([rec[0]] + selected)
+            planInput.append(RoundInput(date, self.players, indices))
+
+        plan = []
+        for x in planInput:
+            plan.append(x.getSimpleRound())
+        
+        res = self.makePlanHeader()
+        for p in plan:
+            res = res + p.getLine(self.players, self.lineTemplate())
+        print(res)
 
         f = open(self.getPlanName(),'w')
-        res = self.makePlanHeader()
-        for l in new:
-            res = res + Plan.lineTemplate.format(*l)
-            self.status.addPlanLine(l[1:])
-            #self.status.pr()
-        print(res)
         f.write(res)
         f.close()
         os.remove(Plan.tempFileName)
         self.status.saveNewStatus(self.startDate)
 
     @staticmethod
-    def getTempPlan():
+    def getTempPlan(players):
         canPlan = []
         f = open(Plan.tempFileName, 'r')
-        for l in  f.readlines()[1:]:
+        lines = f.readlines()
+        names = lines[0].split('|')[1:]
+
+        try:
+            for n,m in zip(players, names):
+                n == m
+        except:
+            raise baseException()
+
+        for l in  lines[1:]:
             elements = l.split('|')
             canPlan.append([x.strip() for x in elements])
         f.close()
