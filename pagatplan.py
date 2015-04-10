@@ -111,6 +111,23 @@ class RoundFilled:
             players[allPlayers.index(self.arranger)] = 'XX'
         return template.format(dateStr, *players)
 
+    def getHtml(self, allPlayers):
+        dateStr = self.date.__format__('%d/%m')
+        players = [' ']*len(allPlayers)
+        if self.players:
+            for x in self.players:
+                players[allPlayers.index(x)] = 'X'
+
+            players[allPlayers.index(self.arranger)] = 'XX'
+        res = '<td >{}</td>'.format(dateStr)
+        for x in players:
+            if x == 'X':
+                res = res + '<td class="center">{}</td>'.format('X')
+            elif x == 'XX':
+                res = res + '<td class="center_select">{}</td>'.format('X')
+            else:
+                res = res + '<td></td>'
+        return res
 
 class SpilStatus:
     def __init__(self):
@@ -223,13 +240,19 @@ class Plan:
         self.players = self.status.names
         self.backupTempName = 'plan.bak'
 
-    def getPlanName(self):
-        return ('pagatplan-{}-{}.pln'.format(
-            self.startDate.year, self.startDate.month))
+    def getPlanName(self, extension):
+        return ('pagatplan-{}-{}.{}'.format(
+            self.startDate.year, self.startDate.month, extension))
 
     def makePlanHeader(self):
         return self.lineTemplate().format('',*self.status.names)
-    
+
+    def makePlanHeaderHtml(self):
+        res = '<tr><td></td>'
+        for n in self.status.names:
+            res = res + '<td class="center" width = "60px">{}</td>'.format(n)
+        return res + '</tr>'
+
     def lineTemplate(self):
         lineTemplate = '{0:<10}|'
         for x in range(len(self.players)):
@@ -268,8 +291,32 @@ class Plan:
         else:
             self.makeNewPlan()
 
+    def makePlanAsText(self, plan):
+        res = 'Pagatplan {} til {}\n'.format(self.startDate, self.endDate)
+        res = res + self.makePlanHeader()
+        for p in plan:
+            res = res + p.getLine(self.players, self.lineTemplate())
+        return res
+
+    def makePlanAsHtml(self, plan):
+        res = '''<!DOCTYPE html>
+<html>
+<head>
+<style>
+.center {text-align: center} 
+.center_select {text-align: center; background-color: #00DD00;} 
+</style>
+</head>
+<body>'''
+        res = res + '<h2>Pagatplan {} til {}</h2>'.format(
+            self.startDate, self.endDate)
+        res = res + '<table border=1px">' + self.makePlanHeaderHtml()
+        for p in plan:
+            res = res + '<tr>{}</tr>'.format(p.getHtml(self.players))
+        return res + '</body>'
+
     def makeNewPlan(self):
-        print('making final plan:', self.getPlanName())
+        print('making final plan:', self.getPlanName('pln'))
         suggested = Plan.getTempPlan(self.players)
         planInput = []
         for rec in suggested:
@@ -292,14 +339,17 @@ class Plan:
                 currentStatus = SpilStatus.fromRoundUpdate(
                     currentStatus, nextRound)
             
-
-        res = 'Pagatplan {} til {}\n'.format(self.startDate, self.endDate)
-        res = res + self.makePlanHeader()
-        for p in plan:
-            res = res + p.getLine(self.players, self.lineTemplate())
+        res = self.makePlanAsHtml(plan)
         print(res)
+        f = open(self.getPlanName('html'),'w')
+        f.write(res)
+        f.close()
 
-        f = open(self.getPlanName(),'w')
+
+
+        res = self.makePlanAsText(plan)
+        print(res)
+        f = open(self.getPlanName('pln'),'w')
         f.write(res)
         f.close()
         #os.remove(Plan.tempFileName) 
