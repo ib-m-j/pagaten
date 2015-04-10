@@ -25,17 +25,67 @@ class RoundInput:
             pass
                                    
 
-    def getSimpleRound(self):
+    def getSimpleRound(self, status):
         if len(self.available) < 4:
             return RoundFilled(self.date, None, None)
         else:
-            selectedPlayers = random.sample(self.available, 4)
-            selectedManager = random.randrange(len(selectedPlayers))
-            
-        return RoundFilled(self.date, 
-                           [self.allPlayers[x] for x in selectedPlayers],
-                           self.allPlayers[selectedPlayers[selectedManager]])
-        
+            selected = []
+            priority = []
+            for x in self.available:
+                name = status.names[x]
+                if status.status[name]['target'] == 1:
+                    selected.append(x)
+                else:
+                    priority.append(
+                        (status.status[name]['target'] - 
+                         status.currentPlayed(name),
+                         -status.status[name]['spillet'], x))
+
+            priority.sort(reverse = True)
+            sel = 0
+            for x in range(4 - len(selected)):
+                selected.append(priority[sel][2])
+                sel = sel + 1
+
+            manager = []
+            currentNames = [status.names[x] for x in selected]
+            if 'Einar' in currentNames and 'Guddie' in currentNames:
+                adjust = 0.5
+            else:
+                adjust = -1
+
+            for x in selected:
+                name = status.names[x]
+                guidingValue = status.status[name]['sidensidst']
+                if name == 'Einar' or name == 'Guddie':
+                    guidingValue = guidingValue + adjust
+                manager.append((guidingValue, x))
+            manager.sort(reverse = True)
+
+            selectedManager = manager[0][1]
+            #print(priority, selected, selectedManager)
+            return RoundFilled(
+                self.date, currentNames,
+                status.names[selectedManager])
+
+#            
+#
+#
+#
+#
+#            selectedPlayers = random.sample(self.available, 4)
+#
+#
+#
+#
+#
+#            selectedManager = random.randrange(len(selectedPlayers))
+#            
+#        return RoundFilled(self.date, 
+#                           [self.allPlayers[x] for x in selectedPlayers],
+#                           self.allPlayers[selectedPlayers[selectedManager]])
+#
+
 class RoundFilled:
     def __init__(self, date, players, arranger):
         self.date = date
@@ -64,6 +114,11 @@ class RoundFilled:
 
 class SpilStatus:
     def __init__(self):
+        pass
+        
+    @staticmethod
+    def fromRepository():
+        self = SpilStatus()
         self.header = ['name', 'target', 'spillet', 'afholdt', 'sidensidst']
         self.headerFormats = ['{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
         planFiles = glob.glob('*.stat')
@@ -86,6 +141,42 @@ class SpilStatus:
             for (h, v) in zip(self.header[1:], record):
                 self.status[name][h] = v
         fil.close()
+        for n in self.names:
+            self.status[n]['playednow'] = 0
+            self.status[n]['possiblerounds'] = 0
+        return self
+
+    @staticmethod
+    def fromRoundUpdate(st, round):
+        self = SpilStatus()
+        self.names = st.names
+        self.status = {}
+        
+        for name in self.names:
+            self.status[name] = {}
+            self.status[name]['target'] = st.status[name]['target']
+            self.status[name]['spillet'] = st.status[name]['spillet']
+            self.status[name]['sidensidst'] = st.status[name]['sidensidst']
+            self.status[name]['afholdt'] = st.status[name]['afholdt']
+            self.status[name]['playednow'] = st.status[name]['playednow']
+            self.status[name]['possiblerounds'] = st.status[name][
+                'possiblerounds'] + 1
+
+        for name in round.players:
+            self.status[name]['spillet'] += 1
+            self.status[name]['sidensidst'] += 1
+            self.status[name]['playednow'] += 1
+
+        self.status[round.arranger]['afholdt'] += 1
+        self.status[round.arranger]['sidensidst'] = 0
+        return self
+                                
+    def currentPlayed(self, name):
+        relevant = self.status[name]
+        if relevant['possiblerounds'] == 0:
+            return 0
+        else:
+            return relevant['playednow']/relevant['possiblerounds']
 
     def addPlanLine(self, Line):
         for (action, name) in zip(Line, self.names):
@@ -98,7 +189,8 @@ class SpilStatus:
                 self.status[name]['sidensidst'] = 0
             
     def saveNewStatus(self, startDate):
-        f = open('pagaten-{}-{}.stat'.format(startDate.year, startDate.month),'w')
+        f = open(
+            'pagaten-{}-{}.stat'.format(startDate.year, startDate.month),'w')
         res =''
         for x in self.names:
             res = res + x
@@ -124,8 +216,8 @@ class Plan:
         self.startDate = startDate
         self.endDate = endDate
         self.skipDates = skipDates
-        self.status = SpilStatus()
-        self.players = [x for x in self.status.names]
+        self.status = SpilStatus.fromRepository()
+        self.players = self.status.names
         self.backupTempName = 'plan.bak'
 
     def getPlanName(self):
@@ -142,7 +234,6 @@ class Plan:
         lineTemplate = lineTemplate + '\n'
         return lineTemplate
 
-    #this can be updated to indicate where people cannot play
     def makePlanInput(self):
         print('Making temp plan - edit where people cannot play')
         dates = []
@@ -190,8 +281,15 @@ class Plan:
             planInput.append(RoundInput(date, self.players, indices))
 
         plan = []
+        currentStatus = self.status
         for x in planInput:
-            plan.append(x.getSimpleRound())
+            print(currentStatus.status['Guddie'])
+            nextRound = x.getSimpleRound(currentStatus)
+            plan.append(nextRound)
+            if nextRound.players:
+                currentStatus = SpilStatus.fromRoundUpdate(
+                    currentStatus, nextRound)
+            
         
         res = self.makePlanHeader()
         for p in plan:
@@ -201,8 +299,8 @@ class Plan:
         f = open(self.getPlanName(),'w')
         f.write(res)
         f.close()
-        os.remove(Plan.tempFileName)
-        self.status.saveNewStatus(self.startDate)
+        #os.remove(Plan.tempFileName) while developingd etails XXX
+        #self.status.saveNewStatus(self.startDate)
 
     @staticmethod
     def getTempPlan(players):
