@@ -119,8 +119,8 @@ class SpilStatus:
     @staticmethod
     def fromRepository():
         self = SpilStatus()
-        self.header = ['name', 'target', 'spillet', 'afholdt', 'sidensidst']
-        self.headerFormats = ['{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
+        self.header = ['name', 'e-mail', 'target', 'spillet', 'afholdt', 'sidensidst']
+        self.headerFormats = ['{}', '{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
         planFiles = glob.glob('*.stat')
         lastValue = 0
         lastPlan = None
@@ -136,9 +136,10 @@ class SpilStatus:
             elements = f.split(';')
             name = elements[0]
             self.names.append(name)
-            record = [float(x) for x in elements[1:]]
+            self.status['e-mail'] = elements[1]
+            record = [float(x) for x in elements[2:]]
             self.status[name] = {}
-            for (h, v) in zip(self.header[1:], record):
+            for (h, v) in zip(self.header[2:], record):
                 self.status[name][h] = v
         fil.close()
         for n in self.names:
