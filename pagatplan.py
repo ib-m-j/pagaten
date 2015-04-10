@@ -119,7 +119,8 @@ class SpilStatus:
     @staticmethod
     def fromRepository():
         self = SpilStatus()
-        self.header = ['name', 'e-mail', 'target', 'spillet', 'afholdt', 'sidensidst']
+        self.header = [
+            'name', 'e-mail', 'target', 'spillet', 'afholdt', 'sidensidst']
         self.headerFormats = ['{}', '{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
         planFiles = glob.glob('*.stat')
         lastValue = 0
@@ -145,6 +146,7 @@ class SpilStatus:
         for n in self.names:
             self.status[n]['playednow'] = 0
             self.status[n]['possiblerounds'] = 0
+
         return self
 
     @staticmethod
@@ -284,15 +286,15 @@ class Plan:
         plan = []
         currentStatus = self.status
         for x in planInput:
-            print(currentStatus.status['Guddie'])
             nextRound = x.getSimpleRound(currentStatus)
             plan.append(nextRound)
             if nextRound.players:
                 currentStatus = SpilStatus.fromRoundUpdate(
                     currentStatus, nextRound)
             
-        
-        res = self.makePlanHeader()
+
+        res = 'Pagatplan {} til {}\n'.format(self.startDate, self.endDate)
+        res = res + self.makePlanHeader()
         for p in plan:
             res = res + p.getLine(self.players, self.lineTemplate())
         print(res)
@@ -300,7 +302,7 @@ class Plan:
         f = open(self.getPlanName(),'w')
         f.write(res)
         f.close()
-        #os.remove(Plan.tempFileName) while developingd etails XXX
+        #os.remove(Plan.tempFileName) 
         #self.status.saveNewStatus(self.startDate)
 
     @staticmethod
