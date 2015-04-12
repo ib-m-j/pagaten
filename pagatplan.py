@@ -1,3 +1,6 @@
+ # -*- coding: utf-8 -*-
+
+
 import datetime
 import glob
 import os.path
@@ -154,9 +157,9 @@ class SpilStatus:
             elements = f.split(';')
             name = elements[0]
             self.names.append(name)
-            self.status['e-mail'] = elements[1]
             record = [float(x) for x in elements[2:]]
             self.status[name] = {}
+            self.status[name]['e-mail'] = elements[1]
             for (h, v) in zip(self.header[2:], record):
                 self.status[name][h] = v
         fil.close()
@@ -175,6 +178,7 @@ class SpilStatus:
         for name in self.names:
             self.status[name] = {}
             self.status[name]['target'] = st.status[name]['target']
+            self.status[name]['e-mail'] = st.status[name]['e-mail']
             self.status[name]['spillet'] = st.status[name]['spillet']
             self.status[name]['sidensidst'] = st.status[name]['sidensidst']
             self.status[name]['afholdt'] = st.status[name]['afholdt']
@@ -209,8 +213,8 @@ class SpilStatus:
                 self.status[name]['sidensidst'] = 0
             
     def saveNewStatus(self, startDate):
-        f = open(
-            'pagaten-{}-{}.stat'.format(startDate.year, startDate.month),'w')
+        statName = 'pagaten-{}-{}.stat'.format(startDate.year, startDate.month)
+        f = open(statName,'w')
         res =''
         for x in self.names:
             res = res + x
@@ -220,6 +224,8 @@ class SpilStatus:
         f.write(res)
         f.close()
         print(res)
+        print('Wrote new status {}\n'.format(statName))
+        
                  
 
     def pr(self):
@@ -284,6 +290,7 @@ class Plan:
         print(res)
         f.write(res)
         f.close()
+        print('Wrote tempplan {}\n'.format(Plan.tempFileName))
 
     def run(self):
         if not os.path.exists(Plan.tempFileName):
@@ -340,11 +347,11 @@ class Plan:
                     currentStatus, nextRound)
             
         res = self.makePlanAsHtml(plan)
-        print(res)
+
+        #print(res)
         f = open(self.getPlanName('html'),'w')
         f.write(res)
         f.close()
-
 
 
         res = self.makePlanAsText(plan)
@@ -352,8 +359,10 @@ class Plan:
         f = open(self.getPlanName('pln'),'w')
         f.write(res)
         f.close()
-        #os.remove(Plan.tempFileName) 
-        #self.status.saveNewStatus(self.startDate)
+        print('Wrote planfiles: {} and {}\n'.format(
+            self.getPlanName('pln'),self.getPlanName('html')))
+        os.remove(Plan.tempFileName) 
+        self.status.saveNewStatus(self.startDate)
 
     @staticmethod
     def getTempPlan(players):
@@ -377,11 +386,13 @@ class Plan:
 
 
 if __name__ == '__main__':
-    plan = Plan('PagatPlan Forår 2015',datetime.date(2015, 1, 8), datetime.date(2015, 6, 25),
-         [datetime.date(2015,4,2), datetime.date(2015,5,14)])
+    plan = Plan(
+        'PagatPlan Forår 2015',
+        datetime.date(2015, 1, 8), 
+        datetime.date(2015, 6, 25), 
+        [datetime.date(2015,4,2), datetime.date(2015,5,14)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
     plan.run()
 
-#comment
