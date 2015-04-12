@@ -5,6 +5,7 @@ import datetime
 import glob
 import os.path
 import random
+import create
 
 class RoundInput:
     def __init__(self, dato, allPlayers, availableIndices):
@@ -322,6 +323,17 @@ class Plan:
             res = res + '<tr>{}</tr>'.format(p.getHtml(self.players))
         return res + '</body>'
 
+    def updateCalendar(self, plan):
+        service  = create.initOAuth()
+        f = open('created.txt','a')
+        for p in plan:
+            if p.players:
+                id = create.createEvent(
+                    service, p.date, p.players, p.arranger, 
+                    [self.status.status[n]['e-mail'] for n in p.players])
+                f.write(id + '\n')
+        f.close()
+
     def makeNewPlan(self):
         print('making final plan:', self.getPlanName('pln'))
         suggested = Plan.getTempPlan(self.players)
@@ -363,6 +375,10 @@ class Plan:
             self.getPlanName('pln'),self.getPlanName('html')))
         os.remove(Plan.tempFileName) 
         self.status.saveNewStatus(self.startDate)
+        
+        self.updateCalendar(plan)
+
+
 
     @staticmethod
     def getTempPlan(players):
