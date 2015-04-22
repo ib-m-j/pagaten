@@ -404,9 +404,9 @@ class Plan:
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Forår 2015',
-        datetime.date(2015, 1, 8), 
-        datetime.date(2015, 6, 25), 
-        [datetime.date(2015,4,2), datetime.date(2015,5,14)])
+        datetime.date(2014, 8, 7), 
+        datetime.date(2014, 12, 18), 
+        [datetime.date(2014,12,4)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
