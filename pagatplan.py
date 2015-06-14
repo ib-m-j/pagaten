@@ -135,14 +135,13 @@ class RoundFilled:
 
 class SpilStatus:
     def __init__(self):
-        pass
+        self.header = [
+            'name', 'e-mail', 'target', 'spillet', 'afholdt', 'sidensidst']
+        self.headerFormats = ['{}', '{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
         
     @staticmethod
     def fromRepository():
         self = SpilStatus()
-        self.header = [
-            'name', 'e-mail', 'target', 'spillet', 'afholdt', 'sidensidst']
-        self.headerFormats = ['{}', '{}', '{:.2f}','{:.0f}','{:.0f}','{:.0f}']
         planFiles = glob.glob('*.stat')
         lastValue = 0
         lastPlan = None
@@ -151,6 +150,7 @@ class SpilStatus:
             if newV > lastValue:
                 lastValue = newV
                 lastPlan = f
+        print("Using statusfile: {}".format(lastPlan))
         fil = open(lastPlan, 'r')
         self.status = {}
         self.names = []
@@ -238,6 +238,7 @@ class SpilStatus:
 
 class Plan:
     tempFileName = 'plan.tmp'
+    backupTempName = 'plan.bak'
 
     def __init__(self, title, startDate, endDate, skipDates):
         self.startDate = startDate
@@ -245,11 +246,11 @@ class Plan:
         self.skipDates = skipDates
         self.status = SpilStatus.fromRepository()
         self.players = self.status.names
-        self.backupTempName = 'plan.bak'
+
 
     def getPlanName(self, extension):
-        return ('pagatplan-{}-{}.{}'.format(
-            self.startDate.year, self.startDate.month, extension))
+        return 'pagatplan-{}-{}.{}'.format(
+            self.startDate.year, self.startDate.month, extension)
 
     def makePlanHeader(self):
         return self.lineTemplate().format('',*self.status.names)
@@ -313,6 +314,12 @@ class Plan:
 <style>
 .center {text-align: center} 
 .center_select {text-align: center; background-color: #00DD00;} 
+table, th, td {
+border: 1px solid black; border-collapse: collapse;
+} 
+th,td {padding: 1px;
+-webkit-print-color-adjust:exact;
+}
 </style>
 </head>
 <body>'''
@@ -335,7 +342,7 @@ class Plan:
         f.close()
 
     def makeNewPlan(self):
-        print('making final plan:', self.getPlanName('pln'))
+        print('making final plan:', self.getPlanName('html'))
         suggested = Plan.getTempPlan(self.players)
         planInput = []
         for rec in suggested:
@@ -361,22 +368,35 @@ class Plan:
         res = self.makePlanAsHtml(plan)
 
         #print(res)
-        f = open(self.getPlanName('html'),'w')
+
+
+        deployPath = os.path.join('c:\\','Users','Ib','einarftp','pagaten')
+
+        f = open(os.path.join(deployPath, self.getPlanName('html')),'w')
+        f.write(res)
+        f.close()
+
+        f = open(os.path.join(deployPath, 'pagatplan.html'),'w')
         f.write(res)
         f.close()
 
 
-        res = self.makePlanAsText(plan)
-        print(res)
-        f = open(self.getPlanName('pln'),'w')
-        f.write(res)
-        f.close()
+        #res = self.makePlanAsText(plan)
+        #print(res)
+        #f = open(self.getPlanName('pln'),'w')
+        #f.write(res)
+        #f.close()
         print('Wrote planfiles: {} and {}\n'.format(
-            self.getPlanName('pln'),self.getPlanName('html')))
-        os.remove(Plan.tempFileName) 
-        self.status.saveNewStatus(self.startDate)
+            'pagatplan.html', self.getPlanName('html')))
         
-        self.updateCalendar(plan)
+
+        if os.path.exists(Plan.backupTempName):
+            os.remove(Plan.backupTempName)
+        os.rename(Plan.tempFileName, Plan.backupTempName)
+        #self.status.saveNewStatus(self.startDate)
+        currentStatus.saveNewStatus(self.startDate)
+        #uncomment when plan is ready and ok
+        #self.updateCalendar(plan)
 
 
 
@@ -403,10 +423,10 @@ class Plan:
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Forår 2015',
-        datetime.date(2014, 8, 7), 
-        datetime.date(2014, 12, 18), 
-        [datetime.date(2014,12,4)])
+        'PagatPlan Efterår 2015',
+        datetime.date(2015, 8, 13), 
+        datetime.date(2015, 12, 17), 
+        [datetime.date(2015,10,15)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
