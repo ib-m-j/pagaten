@@ -396,7 +396,7 @@ th,td {padding: 1px;
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
         #uncomment when plan is ready and ok
-        #self.updateCalendar(plan)
+        self.updateCalendar(plan)
 
 
 
