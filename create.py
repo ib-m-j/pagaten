@@ -1,4 +1,4 @@
-import gflags
+#import gflags
 import httplib2
 import json
 import datetime
@@ -58,10 +58,10 @@ newEvent = {
 
 
 def createEvent(service, date, attendees, arranger, emails):
-  title = 'Pagaten '
-  for n in attendees:
-    title = title + n + ' '
-  title = title[:-1]
+  title = 'Pagaten hos ' + arranger
+  #for n in attendees:
+  #  title = title + n + ' '
+  #title = title[:-1]
   dateBase = date.__format__('%Y-%m-%d')
   attList = [{'email':b,'displayName':a} for (a,b) in zip(attendees, emails)]
   newEvent = {

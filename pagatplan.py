@@ -395,8 +395,8 @@ th,td {padding: 1px;
         os.rename(Plan.tempFileName, Plan.backupTempName)
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
-        #uncomment when plan is ready and ok
-        self.updateCalendar(plan)
+        #uncomment below when plan is ready and ok
+        #self.updateCalendar(plan)
 
 
 
@@ -423,10 +423,10 @@ th,td {padding: 1px;
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Efterår 2015',
-        datetime.date(2015, 8, 13), 
-        datetime.date(2015, 12, 17), 
-        [datetime.date(2015,10,15)])
+        'PagatPlan Foråret 2016',
+        datetime.date(2016, 1, 7), 
+        datetime.date(2016, 6, 23), 
+        [datetime.date(2016,3,24),datetime.date(2016,5,5)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
