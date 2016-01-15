@@ -258,7 +258,7 @@ class Plan:
     def makePlanHeaderHtml(self):
         res = '<tr><td></td>'
         for n in self.status.names:
-            res = res + '<td class="center" width = "60px">{}</td>'.format(n)
+            res = res + '<th class="center" width = "60px">{}</th>'.format(n)
         return res + '</tr>'
 
     def lineTemplate(self):
@@ -315,11 +315,12 @@ class Plan:
 .center {text-align: center} 
 .center_select {text-align: center; background-color: #00DD00;} 
 table, th, td {
-border: 1px solid black; border-collapse: collapse;
+border: 1px solid black; border-collapse: collapse; font-size:12px;
 } 
 th,td {padding: 1px;
 -webkit-print-color-adjust:exact;
 }
+th {font-size:15px}
 </style>
 </head>
 <body>'''
@@ -396,7 +397,7 @@ th,td {padding: 1px;
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
         #uncomment below when plan is ready and ok
-        self.updateCalendar(plan)
+        #self.updateCalendar(plan)
 
 
 
