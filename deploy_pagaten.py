@@ -4,7 +4,7 @@ import glob
 
 
 deployFrom = os.path.join('c:\\','Users','Ib','einarftp','pagaten')
-toDeployFiles = os.path.join(deployFrom, '*.html')
+toDeployFiles = os.path.join(deployFrom, '*.*')
 indexFileName = os.path.join(deployFrom, 'index.html')
 
 def makeIndex(files):
@@ -13,7 +13,7 @@ def makeIndex(files):
 <html>
 <head>
 </head>
-<body>
+<body style="font-size:250%;">
 """
     indexEnd = """
 </body>
@@ -23,7 +23,10 @@ def makeIndex(files):
     f = open(indexFileName, 'w')
     f.write(indexStart)
     for file in files:
-        f.write('<a href="{}">{}</a><br>\n'.format(os.path.basename(file),
+        (root, ext) = os.path.splitext(file)
+        if ext in ['.html','.htm']:
+            print(os.path.basename(file))
+            f.write('<a href="{}" " >{}</a><br>\n'.format(os.path.basename(file),
                                                    os.path.basename(file)))
     f.write(indexEnd)
     f.close()    
