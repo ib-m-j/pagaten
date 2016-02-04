@@ -15,7 +15,7 @@ def makeIndex(files):
 <html>
 <head>
 </head>
-<body>
+<body style="font-size:2em;">
 """
     indexEnd = """
 </body>
