@@ -4,8 +4,10 @@ import glob
 
 
 deployFrom = os.path.join('c:\\','Users','Ib','einarftp','pagaten')
-toDeployFiles = os.path.join(deployFrom, '*.*')
+toDeployTypes = ['*.html','*.js']
+toDeployFiles = [os.path.join(deployFrom, x) for x in toDeployTypes]
 indexFileName = os.path.join(deployFrom, 'index.html')
+print(toDeployFiles)
 
 def makeIndex(files):
     indexStart = """
@@ -13,7 +15,7 @@ def makeIndex(files):
 <html>
 <head>
 </head>
-<body style="font-size:250%;">
+<body style="font-size:2em;">
 """
     indexEnd = """
 </body>
@@ -43,7 +45,9 @@ def cleanDir(conn, dir):
                 print(conn.delete(name))
 
 def deploy():
-    files = glob.glob(toDeployFiles)
+    files = []
+    for x in toDeployFiles:
+        files.extend(glob.glob(x))
     makeIndex(files)
     conn = ftplib.FTP('91.250.84.226', 'einardkftp', '5uM7FtPpI')
     conn.cwd('subdomains\pagaten.einar.dk\httpdocs')
