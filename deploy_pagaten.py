@@ -37,7 +37,8 @@ def cleanDir(conn, dir):
         print(' will clean')
         info = conn.mlsd()
         for name, data in info:
-            if data['type'] == 'file':
+            if (data['type'] == 'file' and 
+               os.path.splitext(name)[1] != 'html'):
                 print(name)
                 print(conn.delete(name))
 
