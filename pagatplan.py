@@ -6,6 +6,7 @@ import glob
 import os.path
 import random
 import create
+import sys
 
 class RoundInput:
     def __init__(self, dato, allPlayers, availableIndices):
@@ -123,7 +124,7 @@ class RoundFilled:
                 players[allPlayers.index(x)] = 'X'
 
             players[allPlayers.index(self.arranger)] = 'XX'
-        res = '<td >{}</td>'.format(dateStr)
+        res = '<td class="center">{}</td>'.format(dateStr)
         for x in players:
             if x == 'X':
                 res = res + '<td class="center">{}</td>'.format('X')
@@ -147,10 +148,12 @@ class SpilStatus:
         lastPlan = None
         for f in planFiles:
             newV = os.stat(f).st_atime
-            if newV > lastValue:
+            if newV > lastValue and \
+            datetime.date.fromtimestamp(newV) != datetime.date.today():
                 lastValue = newV
                 lastPlan = f
-        print("Using statusfile: {}".format(lastPlan))
+        print("Using statusfile: {} {}".format(
+            lastPlan, datetime.date.fromtimestamp(lastValue)))
         fil = open(lastPlan, 'r')
         self.status = {}
         self.names = []
@@ -256,9 +259,9 @@ class Plan:
         return self.lineTemplate().format('',*self.status.names)
 
     def makePlanHeaderHtml(self):
-        res = '<tr><td></td>'
+        res = '<tr><td width="10%"></td>'
         for n in self.status.names:
-            res = res + '<th class="center" width = "60px">{}</th>'.format(n)
+            res = res + '<th class="center" width = "18%">{}</th>'.format(n)
         return res + '</tr>'
 
     def lineTemplate(self):
@@ -315,18 +318,18 @@ class Plan:
 .center {text-align: center} 
 .center_select {text-align: center; background-color: #00DD00;} 
 table, th, td {
-border: 1px solid black; border-collapse: collapse; font-size:12px;
+border: 1px solid black; border-collapse: collapse; font-size:32px;
 } 
-th,td {padding: 1px;
+th,td {padding: 3px;
 -webkit-print-color-adjust:exact;
 }
-th {font-size:15px}
+th,h2 {font-size:36px}
 </style>
 </head>
 <body>'''
         res = res + '<h2>Pagatplan {} til {}</h2>'.format(
             self.startDate, self.endDate)
-        res = res + '<table border=1px">' + self.makePlanHeaderHtml()
+        res = res + '<table border=1px width="100%">' + self.makePlanHeaderHtml()
         for p in plan:
             res = res + '<tr>{}</tr>'.format(p.getHtml(self.players))
         return res + '</body>'
@@ -387,8 +390,8 @@ th {font-size:15px}
         #f = open(self.getPlanName('pln'),'w')
         #f.write(res)
         #f.close()
-        print('Wrote planfiles: {} and {}\n'.format(
-            'pagatplan.html', self.getPlanName('html')))
+        print('Wrote planfiles: {} and {}\n in {}'.format(
+            'pagatplan.html', self.getPlanName('html'),deployPath))
         
 
         if os.path.exists(Plan.backupTempName):
@@ -424,12 +427,14 @@ th {font-size:15px}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Foråret 2016',
-        datetime.date(2016, 1, 7), 
-        datetime.date(2016, 6, 23), 
-        [datetime.date(2016,3,24),datetime.date(2016,5,5)])
+        'PagatPlan Efteråret 2016',
+        datetime.date(2016, 8, 18), 
+        datetime.date(2016, 12, 15), 
+        [datetime.date(2016,9,1)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
+    # redo.bat copies the last plan.bak over as plan input and the detials are then computed based on this
+    #the system uses the last *.stat file but not a *.stat file from the same date
     plan.run()
 
