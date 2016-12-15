@@ -319,12 +319,12 @@ class Plan:
 .center {text-align: center} 
 .center_select {text-align: center; background-color: #00DD00;} 
 table, th, td {
-border: 1px solid black; border-collapse: collapse; font-size:32px;
+border: 1px solid black; border-collapse: collapse; font-size:0.85em;
 } 
 th,td {padding: 3px;
 -webkit-print-color-adjust:exact;
 }
-th,h2 {font-size:36px}
+th,h2 {font-size:1.7em}
 </style>
 </head>
 <body>'''
