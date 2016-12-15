@@ -148,11 +148,12 @@ class SpilStatus:
         lastPlan = None
         for f in planFiles:
             newV = os.stat(f).st_atime
-            if newV > lastValue and \
-            datetime.date.fromtimestamp(newV) != datetime.date.today():
+            if newV > lastValue:
+#            if newV > lastValue and \
+#            datetime.date.fromtimestamp(newV) != datetime.date.today():
                 lastValue = newV
                 lastPlan = f
-        print("Using statusfile: {} {}".format(
+        print("Using statusfile: {}\nTimestamped {}\n".format(
             lastPlan, datetime.date.fromtimestamp(lastValue)))
         fil = open(lastPlan, 'r')
         self.status = {}
@@ -337,6 +338,7 @@ th,h2 {font-size:36px}
     def updateCalendar(self, plan):
         service  = create.initOAuth()
         f = open('created.txt','a')
+        f.write("starting batch\n")
         for p in plan:
             if p.players:
                 id = create.createEvent(
@@ -346,7 +348,7 @@ th,h2 {font-size:36px}
         f.close()
 
     def makeNewPlan(self):
-        print('making final plan:', self.getPlanName('html'))
+        print('making final plan: {}\n'.format(self.getPlanName('html')))
         suggested = Plan.getTempPlan(self.players)
         planInput = []
         for rec in suggested:
@@ -390,7 +392,7 @@ th,h2 {font-size:36px}
         #f = open(self.getPlanName('pln'),'w')
         #f.write(res)
         #f.close()
-        print('Wrote planfiles: {} and {}\n in {}'.format(
+        print('Wrote planfiles: {} and {}\n in {}\n'.format(
             'pagatplan.html', self.getPlanName('html'),deployPath))
         
 
@@ -400,7 +402,8 @@ th,h2 {font-size:36px}
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
         #uncomment below when plan is ready and ok
-        #self.updateCalendar(plan)
+        self.updateCalendar(plan)
+        #tobeuncommented
 
 
 
@@ -427,14 +430,23 @@ th,h2 {font-size:36px}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Efteråret 2016',
-        datetime.date(2016, 8, 18), 
-        datetime.date(2016, 12, 15), 
-        [datetime.date(2016,9,1)])
+        'PagatPlan Forråret 2017',
+        datetime.date(2017, 1, 5), 
+        datetime.date(2017, 6, 29), 
+        [datetime.date(2017,2,9),
+         datetime.date(2017,4,13),
+         datetime.date(2017,5,25)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
     # redo.bat copies the last plan.bak over as plan input and the detials are then computed based on this
-    #the system uses the last *.stat file but not a *.stat file from the same date
+    #the system uses the last *.stat file but not a *.stat file 
+    #from the same date currrently not operational see below
+    #hack in fromRepository when this is operational:
+    #delete irrelevant new status files before running
+    #Problems when ignoring status files created on the same day -
+    #when the system is updated from the repository there is a risk
+    #that the correct last status file is ignored
+    #when ready to create calendar uncommen at word tobeuncommented
     plan.run()
 
