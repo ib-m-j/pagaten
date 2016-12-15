@@ -4,7 +4,7 @@ import glob
 
 
 deployFrom = os.path.join('c:\\','Users','Ib','einarftp','pagaten')
-toDeployTypes = ['*.html','*.js']
+toDeployTypes = ['*.html','*.js','*.asp']
 toDeployFiles = [os.path.join(deployFrom, x) for x in toDeployTypes]
 indexFileName = os.path.join(deployFrom, 'index.html')
 print(toDeployFiles)
