@@ -52,8 +52,8 @@ def initOAuth():
 newEvent = {
   'summary':'Pagaten Guddie, Philippe, Einar, Bente',
   'location':'Ib',
-  'start':{'dateTime':'2015-05-02T19:30:00','timeZone':'Europe/Paris'},
-  'end': {'dateTime':'2015-05-02T23:30:00','timeZone':'Europe/Paris'},
+  'start':{'dateTime':'2015-05-02T18:00:00','timeZone':'Europe/Paris'},
+  'end': {'dateTime':'2015-05-02T22:30:00','timeZone':'Europe/Paris'},
   'attendees':[{'email':'ib.m.jorgensen@gmail.com','displayName':'Ib'}]}
 
 
@@ -67,8 +67,8 @@ def createEvent(service, date, attendees, arranger, emails):
   newEvent = {
     'summary':title,
     'location':arranger,
-    'start':{'dateTime':dateBase+'T19:30:00','timeZone':'Europe/Paris'},
-    'end': {'dateTime':dateBase+'T23:30:00','timeZone':'Europe/Paris'},
+    'start':{'dateTime':dateBase+'T18:00:00','timeZone':'Europe/Paris'},
+    'end': {'dateTime':dateBase+'T22:30:00','timeZone':'Europe/Paris'},
     'attendees': attList}
   print(newEvent)
   create = service.events().insert(calendarId='slro83h5fnso74be0uerav2jmo@group.calendar.google.com',body=newEvent).execute()
