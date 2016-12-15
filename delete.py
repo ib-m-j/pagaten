@@ -1,4 +1,4 @@
-import gflags
+#import gflags
 import httplib2
 import json
 import datetime
@@ -8,7 +8,7 @@ from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from tools import run_flow
 
-FLAGS = gflags.FLAGS
+#FLAGS = gflags.FLAGS
 
 # Set up a Flow object to be used if we need to authenticate. This
 # sample uses OAuth 2.0, and we set up the OAuth2WebServerFlow with
@@ -24,7 +24,7 @@ FLOW = OAuth2WebServerFlow(
     redirect_uri='http://localhost')
 
 # To disable the local server feature, uncomment the following line:
-FLAGS.auth_local_webserver = False
+#FLAGS.auth_local_webserver = False
 
 # If the Credentials don't exist or are invalid, run through the native client
 # flow. The Storage object will ensure that if successful the good
