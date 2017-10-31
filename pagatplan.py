@@ -402,7 +402,7 @@ th,h2 {font-size:1.7em}
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
         #uncomment below when plan is ready and ok
-        self.updateCalendar(plan)
+        #self.updateCalendar(plan)
         #tobeuncommented
 
 
