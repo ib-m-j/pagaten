@@ -402,7 +402,7 @@ th,h2 {font-size:1.7em}
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
         #uncomment below when plan is ready and ok
-        self.updateCalendar(plan)
+        #self.updateCalendar(plan)
         #tobeuncommented
 
 
@@ -430,7 +430,7 @@ th,h2 {font-size:1.7em}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Forråret 2017',
+        'PagatPlan Foråret 2018',
         datetime.date(2017, 1, 5), 
         datetime.date(2017, 6, 29), 
         [datetime.date(2017,2,9),
