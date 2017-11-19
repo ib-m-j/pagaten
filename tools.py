@@ -33,7 +33,7 @@ from six.moves import urllib
 from six.moves import input
 
 from oauth2client import client
-from oauth2client import util
+from oauth2client import _helpers
 
 
 _CLIENT_SECRETS_MESSAGE = """WARNING: Please configure OAuth 2.0
@@ -107,7 +107,7 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Do not log messages to stdout while running as command line program."""
 
 
-@util.positional(3)
+@_helpers.positional(3)
 def run_flow(flow, storage, flags=None, http=None):
   """Core code for a command-line application.
 
