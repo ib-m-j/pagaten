@@ -1,6 +1,5 @@
  # -*- coding: utf-8 -*-
 
-#test af autoeditor
 import datetime
 import glob
 import os.path
