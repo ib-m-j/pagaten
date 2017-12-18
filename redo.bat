@@ -1,2 +1,2 @@
-copy plan.bak plan.tmp
+cp plan.bak plan.tmp
 python pagatplan.py

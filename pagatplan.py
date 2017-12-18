@@ -1,7 +1,6 @@
  # -*- coding: utf-8 -*-
 
-#ny test#
- import datetime
+import datetime
 import glob
 import os.path
 import random
@@ -147,7 +146,8 @@ class SpilStatus:
         lastValue = 0
         lastPlan = None
         for f in planFiles:
-            newV = os.stat(f).st_atime
+            newV = os.stat(f).st_mtime
+            print(f, newV)
             if newV > lastValue:
 #            if newV > lastValue and \
 #            datetime.date.fromtimestamp(newV) != datetime.date.today():
@@ -375,13 +375,12 @@ th,h2 {font-size:1.7em}
 
         #print(res)
 
-
-        deployPath = os.path.join('c:\\','Users','Ib','einarftp','pagaten')
-
+        #not needed any more
+        deployPath = os.path.join('c:\\','Users','Ib','deploy','pagatplan')
         f = open(os.path.join(deployPath, self.getPlanName('html')),'w')
         f.write(res)
         f.close()
-
+        
         f = open(os.path.join(deployPath, 'pagatplan.html'),'w')
         f.write(res)
         f.close()
@@ -431,11 +430,11 @@ th,h2 {font-size:1.7em}
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Foråret 2018',
-        datetime.date(2017, 1, 5), 
-        datetime.date(2017, 6, 29), 
-        [datetime.date(2017,2,9),
-         datetime.date(2017,4,13),
-         datetime.date(2017,5,25)])
+        datetime.date(2018, 1, 4), 
+        datetime.date(2018, 6, 28), 
+        [datetime.date(2018,2,8),
+         datetime.date(2018,2,15),
+         datetime.date(2018,3,29)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
@@ -448,5 +447,7 @@ if __name__ == '__main__':
     #when the system is updated from the repository there is a risk
     #that the correct last status file is ignored
     #when ready to create calendar uncommen at word tobeuncommented
+    #as long as the last day fix is not implemented
+    #REMEMBER TO DELTE LAST STAT FILE FOR EACH REDO
     plan.run()
 
