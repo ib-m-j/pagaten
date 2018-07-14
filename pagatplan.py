@@ -148,9 +148,11 @@ class SpilStatus:
         for f in planFiles:
             newV = os.stat(f).st_mtime
             print(f, newV)
-            if newV > lastValue:
-#            if newV > lastValue and \
-#            datetime.date.fromtimestamp(newV) != datetime.date.today():
+#            if newV > lastValue:
+# if pull from repository has created a valid stat file with same date as today
+# uncomment line above and comment next two lines
+            if newV > lastValue and \
+               datetime.date.fromtimestamp(newV) != datetime.date.today():
                 lastValue = newV
                 lastPlan = f
         print("Using statusfile: {}\nTimestamped {}\n".format(
@@ -401,7 +403,7 @@ th,h2 {font-size:1.7em}
         #self.status.saveNewStatus(self.startDate)
         currentStatus.saveNewStatus(self.startDate)
         #uncomment below when plan is ready and ok
-        #self.updateCalendar(plan)
+        self.updateCalendar(plan)
         #tobeuncommented
 
 
@@ -429,25 +431,22 @@ th,h2 {font-size:1.7em}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Foråret 2018',
-        datetime.date(2018, 1, 4), 
-        datetime.date(2018, 6, 28), 
-        [datetime.date(2018,2,8),
-         datetime.date(2018,2,15),
-         datetime.date(2018,3,29)])
+        'PagatPlan Efteråret 2018',
+        datetime.date(2018, 8, 2), 
+        datetime.date(2018, 12, 20), 
+        [datetime.date(2018,8,30)])
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
     # redo.bat copies the last plan.bak over as plan input and the detials are then computed based on this
     #the system uses the last *.stat file but not a *.stat file 
-    #from the same date currrently not operational see below
-    #hack in fromRepository when this is operational:
+    #from the same date.
+    #This creates problems when a valid stat file has been pulled the same day as the plan is made.
+    #see a hach to handle this in fromRepository.
+    #when the hack  is operational:
     #delete irrelevant new status files before running
-    #Problems when ignoring status files created on the same day -
-    #when the system is updated from the repository there is a risk
-    #that the correct last status file is ignored
-    #when ready to create calendar uncommen at word tobeuncommented
-    #as long as the last day fix is not implemented
+    #when ready to create calendar uncomment at word tobeuncommented
+    #When thw last day hack is in place: 
     #REMEMBER TO DELTE LAST STAT FILE FOR EACH REDO
     plan.run()
 
