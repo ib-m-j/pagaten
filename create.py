@@ -59,7 +59,8 @@ newEvent = {
 
 
 def createEvent(service, date, attendees, arranger, emails):
-  title = 'Pagaten hos ' + arranger
+  title = 'P: ' + arranger
+  #changed above from Pagaten...- not tested
   #for n in attendees:
   #  title = title + n + ' '
   #title = title[:-1]
