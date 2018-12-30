@@ -432,13 +432,16 @@ th,h2 {font-size:1.7em}
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Efteråret 2018',
-        datetime.date(2018, 8, 2), 
-        datetime.date(2018, 12, 20), 
-        [datetime.date(2018,8,30)])
+        datetime.date(2019, 1, 3), 
+        datetime.date(2019, 6, 27), 
+        [datetime.date(2019,4,18)])
+    #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
-    #this can be edited by registeribng where people cannot play
+    #this can be edited by registeribng where people cannot play.
+    #Delete appropriate X where someone cannot play
     #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
-    # redo.bat copies the last plan.bak over as plan input and the detials are then computed based on this
+    # redo.bat copies the last plan.bak over as plan input and the detials are then
+    #computed based on this
     #the system uses the last *.stat file but not a *.stat file 
     #from the same date.
     #This creates problems when a valid stat file has been pulled the same day as the plan is made.
@@ -446,7 +449,7 @@ if __name__ == '__main__':
     #when the hack  is operational:
     #delete irrelevant new status files before running
     #when ready to create calendar uncomment at word tobeuncommented
-    #When thw last day hack is in place: 
+    #When the last day hack is in place: 
     #REMEMBER TO DELTE LAST STAT FILE FOR EACH REDO
     plan.run()
 
