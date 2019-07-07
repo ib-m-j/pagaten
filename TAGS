@@ -1,0 +1,58 @@
+
+create.py,47
+def initOAuth(15,255
+def createEvent(61,2263
+
+deploy_pagaten.py,63
+def makeIndex(12,310
+def cleanDir(36,911
+def deploy(47,1246
+
+pagatplan.py,1012
+class RoundInput:RoundInput10,118
+    def __init__(11,137
+    def calculatePlayers(16,307
+    def getAllConfigurations(19,364
+    def getBestLocalLine(22,425
+    def getStr(25,482
+    def getSimpleRound(32,651
+class RoundFilled:RoundFilled93,2670
+    def __init__(94,2690
+    def getString(99,2834
+    def getLine(108,3113
+    def getHtml(118,3469
+class SpilStatus:SpilStatus136,4143
+    def __init__(137,4162
+    def fromRepository(143,4398
+    def fromRoundUpdate(180,5776
+    def currentPlayed(205,6866
+    def addPlanLine(212,7093
+    def saveNewStatus(222,7515
+    def pr(238,8065
+class Plan:Plan245,8196
+    def __init__(249,8275
+    def getPlanName(257,8539
+    def makePlanHeader(261,8692
+    def makePlanHeaderHtml(264,8791
+    def lineTemplate(270,9016
+    def makePlanInput(277,9271
+    def run(303,10117
+    def makePlanAsText(309,10271
+    def makePlanAsHtml(316,10543
+    def updateCalendar(340,11258
+    def makeNewPlan(352,11695
+    def getTempPlan(412,13754
+
+tools.py,283
+def _CreateArgumentParser(50,1491
+class ClientRedirectServer(73,2517
+class ClientRedirectHandler(82,2778
+  def do_GET(89,3036
+  def log_message(106,3672
+def run_flow(111,3822
+  class F:F162,5984
+    def __init__(163,5996
+def message_if_missing(248,8691
+  def run(257,8959
+
+delete.py,0

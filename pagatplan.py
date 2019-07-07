@@ -7,12 +7,15 @@ import random
 import create
 import sys
 
+
 class RoundInput:
     def __init__(self, dato, allPlayers, availableIndices):
         self.date = dato
         self.allPlayers = allPlayers
         self.available = availableIndices
-
+        self.unavailable = set([x for x in range(len(allPlayers))]).difference(availableIndices)
+        #print(self.unavailable)
+        
     def calculatePlayers(self, status):
         pass
 
@@ -31,7 +34,7 @@ class RoundInput:
 
     def getSimpleRound(self, status):
         if len(self.available) < 4:
-            return RoundFilled(self.date, None, None)
+            return RoundFilled(self.date, None, None, None)
         else:
             selected = []
             priority = []
@@ -51,6 +54,12 @@ class RoundInput:
                 selected.append(priority[sel][2])
                 sel = sel + 1
 
+
+            unavail = []    
+            for x in self.unavailable:
+                unavail.append(status.names[x])
+                
+                
             manager = []
             currentNames = [status.names[x] for x in selected]
             if 'Einar' in currentNames and 'Guddie' in currentNames:
@@ -70,7 +79,7 @@ class RoundInput:
             #print(priority, selected, selectedManager)
             return RoundFilled(
                 self.date, currentNames,
-                status.names[selectedManager])
+                status.names[selectedManager], unavail)
 
 #            
 #
@@ -91,11 +100,12 @@ class RoundInput:
 #
 
 class RoundFilled:
-    def __init__(self, date, players, arranger):
+    def __init__(self, date, players, arranger, unavailable):
         self.date = date
         self.players = players
         self.arranger = arranger
-
+        self.unavailable = unavailable
+        
     def getString(self, unused):
         dateStr = self.date.__str__()
         if self.players:
@@ -193,11 +203,16 @@ class SpilStatus:
             self.status[name]['possiblerounds'] = st.status[name][
                 'possiblerounds'] + 1
 
+
+            
         for name in round.players:
             self.status[name]['spillet'] += 1
             self.status[name]['sidensidst'] += 1
             self.status[name]['playednow'] += 1
 
+        for name in round.unavailable:
+            self.status[name]['possiblerounds'] = self.status[name]['possiblerounds'] - 1
+            
         self.status[round.arranger]['afholdt'] += 1
         self.status[round.arranger]['sidensidst'] = 0
         return self
@@ -432,9 +447,9 @@ th,h2 {font-size:1.7em}
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Efteråret 2018',
-        datetime.date(2019, 1, 3), 
-        datetime.date(2019, 6, 27), 
-        [datetime.date(2019,4,18)])
+        datetime.date(2019, 8, 8), 
+        datetime.date(2019, 12, 19), 
+        [datetime.date(2019,9,5)])
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play.
