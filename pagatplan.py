@@ -447,14 +447,17 @@ th,h2 {font-size:1.7em}
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Efteråret 2018',
-        datetime.date(2019, 8, 8), 
-        datetime.date(2019, 12, 19), 
-        [datetime.date(2019,9,5)])
+        datetime.date(2020, 1, 2), 
+        datetime.date(2020, 6, 25), 
+        [datetime.date(2020,4,9), datetime.date(2020,5,21)])
+    #include comment at tobeuncommenrted
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play.
-    #Delete appropriate X where someone cannot play
-    #if plan.tmp exists it assumes this is prepared and creates a plan based on this input 
+    #Delete appropriate X ls -lart stat*cat redo.bat where someone cannot play
+    #if plan.tmp exists it assumes this is prepared
+    #and creates a plan based on this input
+    #when a plan has been created use redo to keep using the same plan.tmp 
     # redo.bat copies the last plan.bak over as plan input and the detials are then
     #computed based on this
     #the system uses the last *.stat file but not a *.stat file 
