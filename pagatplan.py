@@ -341,7 +341,7 @@ border: 1px solid black; border-collapse: collapse; font-size:0.85em;
 th,td {padding: 3px;
 -webkit-print-color-adjust:exact;
 }
-th,h2 {font-size:1.7em}
+th,h2 {font-size:1.6em}
 </style>
 </head>
 <body>'''
@@ -450,7 +450,7 @@ if __name__ == '__main__':
         datetime.date(2020, 1, 2), 
         datetime.date(2020, 6, 25), 
         [datetime.date(2020,4,9), datetime.date(2020,5,21)])
-    #include comment at tobeuncommenrted
+    #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play.
