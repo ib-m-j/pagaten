@@ -446,15 +446,15 @@ th,h2 {font-size:1.6em}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Efteråret 2018',
-        datetime.date(2020, 1, 2), 
-        datetime.date(2020, 6, 25), 
-        [datetime.date(2020,4,9), datetime.date(2020,5,21)])
+        'PagatPlan Efteråret 2020',
+        datetime.date(2020, 9, 10), 
+        datetime.date(2020, 12, 17), 
+        [datetime.date(2020, 9, 24)])
     #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
     #this can be edited by registeribng where people cannot play.
-    #Delete appropriate X ls -lart stat*cat redo.bat where someone cannot play
+    #Delete appropriate X where someone cannot play
     #if plan.tmp exists it assumes this is prepared
     #and creates a plan based on this input
     #when a plan has been created use redo to keep using the same plan.tmp 
