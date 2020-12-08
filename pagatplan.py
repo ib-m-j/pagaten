@@ -447,9 +447,10 @@ th,h2 {font-size:1.6em}
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Efteråret 2020',
-        datetime.date(2020, 9, 10), 
         datetime.date(2020, 12, 17), 
-        [datetime.date(2020, 9, 24)])
+        datetime.date(2021, 6, 29), 
+        [datetime.date(2020, 12, 24), datetime.date(2020,12,31),
+         datetime.date(2021,4,1), datetime.date(2021,5,13)])
     #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
@@ -458,7 +459,7 @@ if __name__ == '__main__':
     #if plan.tmp exists it assumes this is prepared
     #and creates a plan based on this input
     #when a plan has been created use redo to keep using the same plan.tmp 
-    # redo.bat copies the last plan.bak over as plan input and the detials are then
+    # redo.bat copies the last plan.bak over as plan input and the details are then
     #computed based on this
     #the system uses the last *.stat file but not a *.stat file 
     #from the same date.
