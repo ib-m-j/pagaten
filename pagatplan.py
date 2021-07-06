@@ -446,11 +446,10 @@ th,h2 {font-size:1.6em}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Efteråret 2020',
-        datetime.date(2020, 12, 17), 
-        datetime.date(2021, 6, 29), 
-        [datetime.date(2020, 12, 24), datetime.date(2020,12,31),
-         datetime.date(2021,4,1), datetime.date(2021,5,13)])
+        'PagatPlan Efteråret 2021',
+        datetime.date(2021, 8, 12), 
+        datetime.date(2021, 12, 16), 
+        [datetime.date(2020, 8, 19)])
     #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
