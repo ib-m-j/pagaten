@@ -158,11 +158,11 @@ class SpilStatus:
         for f in planFiles:
             newV = os.stat(f).st_mtime
             print(f, newV)
-            if newV > lastValue:
+#            if newV > lastValue:
 # if pull from repository has created a valid stat file with same date as today
 # uncomment line above and comment next two lines
-#            if newV > lastValue and \
-#               datetime.date.fromtimestamp(newV) != datetime.date.today():
+            if newV > lastValue and \
+               datetime.date.fromtimestamp(newV) != datetime.date.today():
                 lastValue = newV
                 lastPlan = f
         print("Using statusfile: {}\nTimestamped {}\n".format(
