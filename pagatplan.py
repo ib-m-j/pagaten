@@ -158,11 +158,11 @@ class SpilStatus:
         for f in planFiles:
             newV = os.stat(f).st_mtime
             print(f, newV)
-#            if newV > lastValue:
+            if newV > lastValue:
 # if pull from repository has created a valid stat file with same date as today
 # uncomment line above and comment next two lines
-            if newV > lastValue and \
-               datetime.date.fromtimestamp(newV) != datetime.date.today():
+#            if newV > lastValue and \
+#               datetime.date.fromtimestamp(newV) != datetime.date.today():
                 lastValue = newV
                 lastPlan = f
         print("Using statusfile: {}\nTimestamped {}\n".format(
@@ -446,10 +446,10 @@ th,h2 {font-size:1.6em}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Efteråret 2021',
-        datetime.date(2021, 8, 12), 
-        datetime.date(2021, 12, 16), 
-        [datetime.date(2020, 8, 19)])
+        'PagatPlan Fopråret 2022',
+        datetime.date(2022, 1, 6), 
+        datetime.date(2022, 6, 30), 
+        [datetime.date(2022, 4, 14), datetime.date(2022, 5, 26)])
     #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
