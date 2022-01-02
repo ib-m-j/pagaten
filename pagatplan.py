@@ -471,6 +471,3 @@ if __name__ == '__main__':
     #REMEMBER TO DELTE LAST STAT FILE FOR EACH REDO
     plan.run()
 
-#!!!!!!!!!!!!!!!!!!!!!!github was strange this file is claimed to be 4 commits ahead og
-#!!!!!!!!!!!!!!!!!!!!!!!origin/master but everything seems OK
-#!!!!!!!!!!!!!!!!!!!!version in temp/github/pagaten/pagaten is treated correctly
