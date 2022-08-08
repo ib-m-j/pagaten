@@ -107,7 +107,7 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     """Do not log messages to stdout while running as command line program."""
 
 
-@_helpers.positional(3)
+#@_helpers.positional(3)
 def run_flow(flow, storage, flags=None, http=None):
   """Core code for a command-line application.
 
