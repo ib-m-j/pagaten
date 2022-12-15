@@ -393,7 +393,7 @@ th,h2 {font-size:1.6em}
         #print(res)
 
         #not needed any more
-        deployPath = os.path.join('c:\\','Users','Ib','deploy','pagatplan')
+        deployPath = os.path.join('c:\\','Users','ibmjo','deploy','pagatplan')
         f = open(os.path.join(deployPath, self.getPlanName('html')),'w')
         f.write(res)
         f.close()
@@ -446,10 +446,10 @@ th,h2 {font-size:1.6em}
 
 if __name__ == '__main__':
     plan = Plan(
-        'PagatPlan Efteråret 2022',
-        datetime.date(2022, 9, 8), 
-        datetime.date(2022, 12, 15), 
-        [])
+        'PagatPlan Foråret 2023',
+        datetime.date(2023, 1, 5), 
+        datetime.date(2023, 6, 29), 
+        [datetime.date(2023, 4, 6), datetime.date(2023, 5, 18)])
     #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
