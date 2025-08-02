@@ -21,7 +21,7 @@ class RoundInput:
 
     def getAllConfigurations(self, status):
         pass
-
+        
     def getBestLocalLine(self, status):
         pass
 
@@ -447,10 +447,9 @@ th,h2 {font-size:1.6em}
 if __name__ == '__main__':
     plan = Plan(
         'PagatPlan Foråret 2025',
-        datetime.date(2025, 1, 16), 
-        datetime.date(2025, 6, 26), 
-        [datetime.date(2025, 4, 17),
-         datetime.date(2025, 4, 10)])
+        datetime.date(2025, 8, 14), 
+        datetime.date(2025, 12, 18), 
+        [datetime.date(2025, 8, 28)])
     #include comment at tobeuncommented
     #above start date, end date, list of dates where we do not play
     #if plan.tmp does not exist run creates this and exits.
